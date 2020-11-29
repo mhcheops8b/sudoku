@@ -3,3 +3,13 @@
 ################################################################################
 
 /.vs/sudoku_solvers/v15/.suo
+/.vs/sudoku_solvers/v15/ipch/AutoPCH/f46ac953fde1acb6/MNSUDOKU.ipch
+/.vs/sudoku_solvers/v15/Browse.VC.opendb
+/.vs/sudoku_solvers/v15/Browse.VC.db
+*.ipch
+*.obj
+*.exe
+*.ilk
+*.log
+*.pdb
+*.tlog
