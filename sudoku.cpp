@@ -18,7 +18,12 @@ int main(int argc, char **argv) {
 		regionsudokuboard rsdk;
 
 		if (rsdk.read_sudoku(argv[2])) {
+			rsdk.display_sudoku();
+			cout << endl;
+			rsdk.print_regionmap();
+			cout << endl;
 			rsdk.gen_regions();
+					
 			rsdk.solve_recursive(0);
 		}
 		

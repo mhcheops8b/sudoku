@@ -5,12 +5,41 @@
 
 using namespace std;
 
+// 8x8
+int local8_regionmap[MAXROWSIZE*MAXCOLSIZE][MAXROWSIZE*MAXCOLSIZE] =
+{
+	{1,1,1,1,2,2,2,2},
+	{1,1,1,1,2,2,2,2},
+	{3,3,4,4,4,4,5,5},
+	{3,3,4,4,4,4,5,5},
+	{3,3,6,6,6,6,5,5},
+	{3,3,6,6,6,6,5,5},
+	{7,7,7,7,8,8,8,8},
+	{7,7,7,7,8,8,8,8}
+};
+
+// 9x9
+int local9_regionmap[MAXROWSIZE*MAXCOLSIZE][MAXROWSIZE*MAXCOLSIZE] =
+{
+	{1,1,1,2,2,2,3,3,3},
+	{1,1,1,1,2,3,3,3,3},
+	{1,4,1,2,2,2,3,6,3},
+	{4,4,4,2,5,2,6,6,6},
+	{4,5,5,5,5,5,5,5,6},
+	{4,4,4,8,5,8,6,6,6},
+	{7,4,7,8,8,8,9,6,9},
+	{7,7,7,7,8,9,9,9,9},
+	{7,7,7,8,8,8,9,9,9}
+
+};
+
 void regionsudokuboard::solve_recursive(int level) {
 
 //	cout << "Level: " << level << endl;
 
 	if (level == rowsize*colsize*rowsize*colsize) {
 		// print solution
+		std::cout << "Solution:\n";
 		display_sudoku();
 		cout << "----" << endl;
 	}
@@ -55,7 +84,16 @@ bool regionsudokuboard::can_be_filled(int col, int row, int element) {
 	return test_region(col, row, element);	
 } 
 
+void regionsudokuboard::print_regionmap()
+{
+	for (int c = 0; c < rowsize * colsize; c++)
+	{ 
+		for (int r = 0; r < rowsize * colsize; r++)
+			std::cout << regionmap[r][c];
+		std::cout << '\n';
+	}
 
+}
 
 void regionsudokuboard::gen_regions() {
 	int indices[MAXROWSIZE*MAXCOLSIZE];
@@ -111,7 +149,13 @@ void regionsudokuboard::print_regions() {
 
 	}
 }
-
+void regionsudokuboard::set_region_map(int rows, int cols, int(&region_map)[MAXROWSIZE*MAXCOLSIZE][MAXROWSIZE*MAXCOLSIZE])
+{
+	//switched r and c meaning!
+	for (int r = 0; r < rows; r++)
+		for (int c = 0; c < cols; c++)
+			regionmap[c][r] = region_map[r][c];
+}
 bool regionsudokuboard::read_sudoku(char *filename) {
 
 	ifstream infile;
@@ -121,6 +165,8 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 	if (infile.good()) {
 		char buffer[512];
 		bool firstline = true, enough = false, map_enough = false;
+		bool region_read = false;
+		int number_of_digits = 1;
 		int intcol = 0, introw = 0;
 
 		do {
@@ -136,7 +182,7 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 
 					int col = 0;
 					while (*pom >= '0' && *pom <= '9') {
-						col = 10* col + (*pom - '0');
+						col = 10 * col + (*pom - '0');
 						pom++;
 					}
 					colsize = col;
@@ -155,11 +201,12 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 						pom++;
 
 					int row = 0;
-					while (*pom>='0' && *pom<='9') {
-						row = 10* row + (*pom - '0');
+					while (*pom >= '0' && *pom <= '9') {
+						row = 10 * row + (*pom - '0');
 						pom++;
 					}
 					rowsize = row;
+
 
 					/*
 					if (row != ROWSIZE) {
@@ -172,72 +219,154 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 					//skip_whitespaces
 					while (*pom && (*pom == ' ' || *pom == '\t'))
 						pom++;
-					
+
 					if (*pom != 'A' && *pom != 'N') {
-						cerr << "Unknown element type." << endl;
+						cerr << "Unknown element type.\nExpecting A for letter or N for numbers." << endl;
 						infile.close();
 						return false;
 					}
 					else {
 						if (*pom == 'A')
-							element_type  = ELEM_ALPHABET;
-						else
+						{
+							element_type = ELEM_ALPHABET;
+						}
+						else {
 							element_type = ELEM_NUMERIC;
+							if (rowsize * colsize >= 10)
+								number_of_digits = 2;
+						}
 					}
 					pom++;
-					
+
 					//skip_whitespaces
 					while (*pom && (*pom == ' ' || *pom == '\t'))
 						pom++;
-				
+
 					if (*pom != 'D' && *pom != 'S') {
-						cerr << "Unknown sudoku type." << endl;
+						cerr << "Unknown sudoku type.\nExpecting S for standard or D for diagonal sudoku." << endl;
 						infile.close();
 						return false;
 					}
 					else {
 						if (*pom == 'D')
-							sudoku_type  = TYPE_DIAGONAL;
+							sudoku_type = TYPE_DIAGONAL;
 						else
 							sudoku_type = TYPE_STANDARD;
+					}
+					pom++;
+					//skip_whitespaces
+					while (*pom && (*pom == ' ' || *pom == '\t'))
+						pom++;
+
+					if (*pom == 'T')
+					{
+						pom++;
+						switch (*pom)
+						{
+						case 'R':
+							region_read = true;
+							break;
+						case '8':
+							region_read = false;
+							set_region_map(8, 8, local8_regionmap);
+							break;
+						case '9':
+							region_read = false;
+							set_region_map(9, 9, local9_regionmap);
+							break;
+						default:
+							cerr << "Unknown sudoku region type.\nExpecting T for type selection followed by:\n\
+\tR: for reading from file (default)\n\
+\t8: for standard Pravda 8x8 sudoku\n\
+\t9: for standard Pravda 9x9 sudoku." << endl;
+							infile.close();
+							return false;
+						};
+					}
+					else
+					{
+						//std::cout << "'" << (int)*pom << "'";
+						if (!*pom)
+						{
+							region_read = true;
+
+						}
+						else
+						{
+							cerr << "Unknown sudoku region type.\nExpecting T for type selection followed by:\n\
+\tR: for reading from file (default)\n\
+\t8: for standard Pravda 8x8 sudoku\n\
+\t9: for standard Pravda 9x9 sudoku." << endl;
+							infile.close();
+							return false;
+						}
 					}
 
 					firstline = false;
 				}
 				else {
-				
-					if (element_type == ELEM_NUMERIC) {	
+
+					if (element_type == ELEM_NUMERIC) {
 						while (*pom && intcol < rowsize*colsize) {
 							//cout << *pom << endl;
-							if (*pom>='1' && *pom<='9') {
-								field[intcol++][introw] = (*pom - '0');
-}
+							if (*pom >= '1' && *pom <= '9') {
+								if (number_of_digits == 1)
+									field[intcol++][introw] = (*pom - '0');
+								else
+								{
+									int val = 0;
+									while (*pom >= '1' && *pom <= '9')
+										val = 10 * val + (*pom - '0');
+									if (val< 1 || val > rowsize * colsize)
+									{
+										cerr << "Use delimiters for boards with 10 or more rows / columns.\n";
+										cerr << buffer << '\n';
+										for (int ll = 0; ll < (pom - buffer) - 1; ll++)
+											cerr << ' ';
+										cerr << '^' << '\n';
+
+										infile.close();
+										return false;
+									}
+								}
+							}
 							else {
-								if (*pom == '.')	
+								if (*pom == '.')
 									field[intcol++][introw] = 0;
 								else {
-									cerr << "Unknown character '" << *pom << "'." << endl;
-									infile.close();
-									return false;
+									if (*pom == ' ' || *pom == '\t' || *pom == ',')
+									{
+										// skip ws and delimiters
+									}
+									else {
+										cerr << "Unknown character '" << *pom << "'." << endl;
+										cerr << buffer << '\n';
+										for (int ll = 0; ll < (pom - buffer) - 1; ll++)
+											cerr << ' ';
+										cerr << '^' << '\n';
 
+										infile.close();
+										return false;
+
+									}
 								}
 							}
 							pom++;
 						}
-						intcol = 0;						
+						intcol = 0;
 						introw++;
-						if (introw == rowsize*colsize)
+						if (introw == rowsize * colsize)
 							enough = true;
 
-					}	
+					}
 					else {
 						while (*pom) {
 							//cout << *pom << endl;
-							if (*pom>='A' && *pom<='Z') {
+							if (*pom >= 'A' && *pom <= 'Z') {
 								field[intcol++][introw] = (*pom - 'A' + 1);
-}
+							}
 							else {
-								if (*pom == '.')	
+								if (*pom == '.')
 									field[intcol++][introw] = 0;
 								else {
 									cerr << "Unknown character '" << *pom << "'." << endl;
@@ -247,72 +376,76 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 							}
 							pom++;
 						}
-						intcol = 0;						
+						intcol = 0;
 						introw++;
-						if (introw == rowsize*colsize)
+						if (introw == rowsize * colsize)
 							enough = true;
 					}
 
 				}
 			}
 
-		} while(infile.good() && !enough);
+		} while (infile.good() && !enough);
 
-		//skip - empty line
-		infile.getline(buffer, 512);
+		if (region_read)
+		{
 
-		intcol = 0; 
-		introw = 0;
-		do {
-			
+			//skip - empty line
 			infile.getline(buffer, 512);
-			if (infile.good() && !map_enough) {
-				char *pom = buffer;
 
-				//cout << buffer <<endl;
-				// skipws
-				while (*pom && (*pom == ' ' || *pom == '\t')) pom++;
-				
-				while (*pom) {	
-					int val = 0;
-					//readnumber
-					while (*pom>='0' && *pom<='9') {
-						val = 10 * val + (*pom - '0');
-						pom++;
-					}
-					if (val > 0) {
-						cout << "C:" << intcol << " R:" << introw << " V:" << val << endl;	
-						regionmap[intcol][introw] = val;
-						intcol++;
-						
-						
-					}
-					if (intcol == rowsize*colsize)
-						break;
+			// Read region_map
+			intcol = 0;
+			introw = 0;
+			do {
 
-					//skipws
+				infile.getline(buffer, 512);
+				if (infile.good() && !map_enough) {
+					char *pom = buffer;
+
+					//cout << buffer <<endl;
+					// skipws
 					while (*pom && (*pom == ' ' || *pom == '\t')) pom++;
-					//skipdelimiter ','
-					if (*pom != ',') {
-						cout << "'" << *pom << "'"<< endl;
-						cerr << "Missing , ." << endl;
-						infile.close();
-						return false;
+
+					while (*pom) {
+						int val = 0;
+						//readnumber
+						while (*pom >= '0' && *pom <= '9') {
+							val = 10 * val + (*pom - '0');
+							pom++;
+						}
+						if (val > 0) {
+							//cout << "C:" << intcol << " R:" << introw << " V:" << val << endl;	
+							regionmap[intcol][introw] = val;
+							intcol++;
+
+
+						}
+						if (intcol == rowsize * colsize)
+							break;
+
+						//skipws
+						while (*pom && (*pom == ' ' || *pom == '\t')) pom++;
+						//skipdelimiter ','
+						if (*pom != ',') {
+							cout << "'" << *pom << "'" << endl;
+							cerr << "Missing , ." << endl;
+							infile.close();
+							return false;
+						}
+						else pom++;
+						//skipws
+						while (*pom && (*pom == ' ' || *pom == '\t')) pom++;
+
 					}
-					else pom++;
-					//skipws
-					while (*pom && (*pom == ' ' || *pom == '\t')) pom++;
+					introw++;
+					intcol = 0;
+					if (introw == rowsize * colsize)
+						map_enough = true;
 
 				}
-				introw++;
-				intcol=0;
-				if (introw == rowsize*colsize)
-					map_enough = true;
 
-			}
-		
-		} while(infile.good() && !map_enough);
-
+			} while (infile.good() && !map_enough);
+		}
 	}
 	else {
 		cerr << "Error opening file \"" << filename << "\"." << endl; 	

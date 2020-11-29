@@ -203,7 +203,11 @@ void sudokuboard::display_sudoku() {
 		case ELEM_NUMERIC:
 			for (int row = 0; row < rowsize*colsize; row++) {
 				for (int col = 0; col < rowsize*colsize; col++)
-					cout << field[col][row] << " ";
+					if (field[col][row])
+						cout << field[col][row];
+					else
+							cout << '.';
+					cout << " ";
 				cout << endl;
 			}
 			break;
