@@ -1,0 +1,14 @@
+4 3 A S
+KG.L.....I.A
+..I..H.K....
+D..F..AIH.C.
+..AIKC...D..
+.....J..GF..
+JBD...H.....
+.....L...GEC
+..JD..I.....
+..G...EFJK..
+.H.KFD..A..J
+....L.C..E..
+F.L.....D.GH
+
