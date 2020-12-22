@@ -1,0 +1,13 @@
+4 3 A S
+...B.D..K..A
+..I.KL.G.DJC
+KD..B.I..L.E
+...I.BJK....
+JCD..A.E.G.B
+..EL..C.AJK.
+.FAD.H..LE..
+B.L.A.F..IGH
+....DEL.C...
+I.K..C.L..AF
+FLJ.E.BA.H..
+D..H..G.E...
