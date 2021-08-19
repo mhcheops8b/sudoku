@@ -207,7 +207,7 @@ void sudokuboard::display_sudoku() {
 						cout << field[col][row];
 					else
 							cout << '.';
-					cout << " ";
+				cout << " ";
 				cout << endl;
 			}
 			break;
