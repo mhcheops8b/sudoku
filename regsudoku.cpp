@@ -33,6 +33,21 @@ int local9_regionmap[MAXROWSIZE*MAXCOLSIZE][MAXROWSIZE*MAXCOLSIZE] =
 
 };
 
+// 9x9 2015
+int local9_15_regionmap[MAXROWSIZE * MAXCOLSIZE][MAXROWSIZE * MAXCOLSIZE] =
+{
+	{1,1,1,1,2,2,2,2,2},
+	{3,3,3,1,1,2,2,2,2},
+	{3,3,3,4,1,1,5,5,5},
+	{6,3,3,4,4,1,5,5,5},
+	{6,6,3,4,4,4,7,5,5},
+	{6,6,6,8,4,4,7,7,5},
+	{6,6,6,8,8,4,7,7,7},
+	{9,9,9,9,8,8,7,7,7},
+	{9,9,9,9,9,8,8,8,8}
+};
+
+
 void regionsudokuboard::solve_recursive(int level) {
 
 //	cout << "Level: " << level << endl;
@@ -271,14 +286,24 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 							set_region_map(8, 8, local8_regionmap);
 							break;
 						case '9':
+							pom++;
 							region_read = false;
-							set_region_map(9, 9, local9_regionmap);
+							if (!*pom)
+								set_region_map(9, 9, local9_regionmap);
+							else {
+								if (!strncmp(pom, "-15", 3))
+								{
+									set_region_map(9, 9, local9_15_regionmap);
+									pom += 3;
+								}
+							}
 							break;
 						default:
 							cerr << "Unknown sudoku region type.\nExpecting T for type selection followed by:\n\
 \tR: for reading from file (default)\n\
 \t8: for standard Pravda 8x8 sudoku\n\
-\t9: for standard Pravda 9x9 sudoku." << endl;
+\t9: for standard Pravda 9x9 sudoku.\n\
+\t9-15 for standard Pravda 9x9 sudoku in year 2015" << endl;
 							infile.close();
 							return false;
 						};
