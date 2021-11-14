@@ -47,6 +47,19 @@ int local9_15_regionmap[MAXROWSIZE * MAXCOLSIZE][MAXROWSIZE * MAXCOLSIZE] =
 	{9,9,9,9,9,8,8,8,8}
 };
 
+// 9x9 2017
+int local9_17_regionmap[MAXROWSIZE * MAXCOLSIZE][MAXROWSIZE * MAXCOLSIZE] =
+{
+	{1,1,1,1,1,2,2,2,2},
+	{1,1,3,3,3,4,4,2,2},
+	{1,3,3,3,3,4,4,4,2},
+	{1,3,3,5,5,5,4,4,2},
+	{6,7,7,5,5,5,4,4,2},
+	{6,7,7,5,5,5,8,8,9},
+	{6,7,7,7,8,8,8,8,9},
+	{6,6,7,7,8,8,8,9,9},
+	{6,6,6,6,9,9,9,9,9}
+};
 
 void regionsudokuboard::solve_recursive(int level) {
 
@@ -295,6 +308,14 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 								{
 									set_region_map(9, 9, local9_15_regionmap);
 									pom += 3;
+								}
+								else
+								{
+									if (!strncmp(pom, "-17", 3))
+									{
+										set_region_map(9, 9, local9_17_regionmap);
+										pom += 3;
+									}
 								}
 							}
 							break;
