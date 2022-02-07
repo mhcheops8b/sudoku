@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 #include "stdsudoku.h"
@@ -109,30 +110,85 @@ bool sudokuboard::read_sudoku(char *filename) {
 				}
 				else {
 				
-					if (element_type == ELEM_NUMERIC) {	
-						while (*pom && intcol < rowsize*colsize) {
-							//cout << *pom << endl;
-							if (*pom>='1' && *pom<='9') {
-								field[intcol++][introw] = (*pom - '0');
-}
-							else {
-								if (*pom == '.')	
-									field[intcol++][introw] = 0;
-								else {									
-									error_place(cerr, buffer, pom);
-									cerr << "Unknown character '" << *pom << "'." << endl;
-									infile.close();
-									return false;
-
+					if (element_type == ELEM_NUMERIC) {
+						if (rowsize * colsize < 10) {
+							while (*pom && intcol < rowsize * colsize) {
+								//cout << *pom << endl;
+								if (*pom >= '1' && *pom <= '9') {
+									field[intcol++][introw] = (*pom - '0');
 								}
-							}
-							pom++;
-						}
-						intcol = 0;						
-						introw++;
-						if (introw == rowsize*colsize)
-							enough = true;
+								else {
+									if (*pom == '.')
+										field[intcol++][introw] = 0;
+									else {
+										error_place(cerr, buffer, pom);
+										cerr << "Unknown character '" << *pom << "'." << endl;
+										infile.close();
+										return false;
 
+									}
+								}
+								pom++;
+							}
+							intcol = 0;
+							introw++;
+							if (introw == rowsize * colsize)
+								enough = true;
+
+						}
+						else {
+							// digits can be 1 or multiple, delimiter space is necessary
+							while (*pom && intcol < rowsize * colsize) {
+								//cout << *pom << endl;
+								int value = 0;
+								if (*pom >= '1' && *pom <= '9') {
+									value = (int)(*pom - '0');
+									pom++;
+									while (*pom && *pom >= '0' && *pom <= '9') {
+										value = 10 * value + (int)(*pom - '0');
+										pom++;
+									}
+									//std::cout << "value: " << value << '\n';
+									field[intcol++][introw] = value;
+									/*if (*pom != '.' && (*pom != ' ' && *pom != '\t'))
+									{
+										error_place(cerr, buffer, pom);
+										cerr << "KKUnknown character '" << *pom << "'." << endl;
+										infile.close();
+									}*/
+									//else
+									//{
+									//	// skip ws
+									//	while (*pom == ' ' || *pom == '\t')
+									//		pom++;
+									//}
+								}
+								else {
+									if (*pom == '.')
+									{
+										field[intcol++][introw] = 0;
+										pom++;
+									}
+									else if (*pom == ' ' || *pom == '\t') {
+										// skip ws
+										while (*pom == ' ' || *pom == '\t')
+											pom++;
+									}
+									else {
+										error_place(cerr, buffer, pom);
+										cerr << "Unknown character '" << *pom << "'." << endl;
+										infile.close();
+										return false;
+
+									}
+								}
+								
+							}
+							intcol = 0;
+							introw++;
+							if (introw == rowsize * colsize)
+								enough = true;
+						}
 					}	
 					else {
 						while (*pom) {
@@ -201,15 +257,22 @@ void sudokuboard::display_sudoku() {
 
 	switch (element_type) {
 		case ELEM_NUMERIC:
-			for (int row = 0; row < rowsize*colsize; row++) {
-				for (int col = 0; col < rowsize*colsize; col++)
+		{
+			int width = 1;
+			int rs = rowsize * colsize;
+			if (rs >= 10 && rs <= 99)
+				width = 3;
+
+			for (int row = 0; row < rowsize * colsize; row++) {
+				for (int col = 0; col < rowsize * colsize; col++)
 					if (field[col][row])
-						cout << field[col][row];
+						cout << std::setw(width) << field[col][row];
 					else
-							cout << '.';
-				cout << " ";
+						cout << '.';
+				cout << std::setw(width) << " ";
 				cout << endl;
 			}
+		}
 			break;
 
 		case ELEM_ALPHABET:
