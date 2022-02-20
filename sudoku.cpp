@@ -6,8 +6,12 @@
 
 int main(int argc, char **argv) {
 
-	if (argc < 3) {
-		cout << "Usage: " << argv[0] << " type filename" << endl;
+	if (argc < 3) {		
+		if (argc < 1)
+			cout << "Usage: " << "<executable_name>" << " type filename" << endl;
+		else
+			cout << "Usage: " << argv[0] << " type filename" << endl;
+		
 		cout << "\ttype - REG (region), STD (standard), SAM (samuraj) sudoku" << endl;
 		return 0;
 	}
