@@ -6,15 +6,25 @@
 
 int main(int argc, char **argv) {
 
-	if (argc < 3) {		
-		if (argc < 1)
-			cout << "Usage: " << "<executable_name>" << " type filename" << endl;
+	if (argc < 3 || argc > 3) {		
+		if (argc < 1 || !argv)
+			cout << "Usage: " << "<executable_name>";
 		else
-			cout << "Usage: " << argv[0] << " type filename" << endl;
+			cout << "Usage: " << argv[0];
+
+		cout << " <type> <filename>" << endl;
+		cout << "\t<type> - REG (region), STD (standard), SAM (samuraj) sudoku" << endl;
+		cout << "\t<filename> - the file that is being read as input" << endl;
 		
-		cout << "\ttype - REG (region), STD (standard), SAM (samuraj) sudoku" << endl;
+		if (argc > 3)
+		{
+			cout << "More than two arguments has been provided.\n";
+		}
+		
 		return 0;
 	}
+
+	
 
 	//cout << "argv[1] = " << argv[1] << endl;
 
