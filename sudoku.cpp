@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 		
 		if (argc > 3)
 		{
-			cout << "More than two arguments has been provided.\n";
+			cout << "More than two arguments have been provided.\n";
 		}
 		
 		return 0;
