@@ -2,10 +2,10 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/sudoku_solvers/v15/.suo
-/.vs/sudoku_solvers/v15/ipch/AutoPCH/f46ac953fde1acb6/MNSUDOKU.ipch
-/.vs/sudoku_solvers/v15/Browse.VC.opendb
-/.vs/sudoku_solvers/v15/Browse.VC.db
+#/.vs/sudoku_solvers/v15/.suo
+#/.vs/sudoku_solvers/v15/ipch/AutoPCH/f46ac953fde1acb6/MNSUDOKU.ipch
+#/.vs/sudoku_solvers/v15/Browse.VC.opendb
+#/.vs/sudoku_solvers/v15/Browse.VC.db
 *.ipch
 *.obj
 *.exe
@@ -13,3 +13,10 @@
 *.log
 *.pdb
 *.tlog
+x64/Release/*
+x64/Debug/*
+*.suo
+*.db
+*.opendb
+#.vs/sudoku_solvers/v16/.suo
+#.vs/sudoku_solvers/v16/Browse.VC.db
