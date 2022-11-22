@@ -34,10 +34,12 @@ int main(int argc, char **argv) {
 		if (rsdk.read_sudoku(argv[2])) {
 			rsdk.display_sudoku();
 			cout << endl;
-			rsdk.print_regionmap();
-			cout << endl;
-			rsdk.gen_regions();
-					
+			if (rsdk.has_region)
+			{ 
+				rsdk.print_regionmap();
+				cout << endl;
+				rsdk.gen_regions();
+			}
 			rsdk.solve_recursive(0);
 		}
 		

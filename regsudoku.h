@@ -10,7 +10,9 @@ struct regionsudokuboard:sudokuboard {
 
 	int regionmap[MAXROWSIZE*MAXCOLSIZE][MAXROWSIZE*MAXCOLSIZE];
 	int region[MAXROWSIZE*MAXCOLSIZE][MAXROWSIZE*MAXCOLSIZE][2];
-	
+	bool has_region;
+
+
 	void gen_regions();
 	bool test_region(int col, int row, int element);
 	bool read_sudoku(char *filename);
