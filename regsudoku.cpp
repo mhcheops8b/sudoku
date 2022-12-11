@@ -109,7 +109,31 @@ bool regionsudokuboard::can_be_filled(int col, int row, int element) {
 		if (field[intcol][row] == element)
 			return false;
 
-	return test_region(col, row, element);	
+	if (sudoku_type == TYPE_DIAGONAL)
+	{
+		// assumes rowsize == colsize
+
+		// main diagonal
+		if (col == row) 
+		{
+			for (int d = 0; d < rc; d++)
+			if (field[d][d] == element)
+				return false;	
+		}
+
+		// other diagonal
+		if (col == rc - 1 - row)
+		{
+			for (int d = 0; d < rc; d++)
+			if (field[rc - 1 - d][d] == element)
+				return false;
+		}
+	}
+
+	if (has_region)
+		return test_region(col, row, element);
+
+	return true;
 } 
 
 void regionsudokuboard::print_regionmap()
@@ -145,14 +169,12 @@ void regionsudokuboard::gen_regions() {
 
 bool regionsudokuboard::test_region(int col, int row, int element) {
 		
-
-
 	int regidx = regionmap[col][row] - 1;
 
 //	cout << col << " " << row << " " << regidx << endl;
-	
+		
 //	cout << "DEBUG: " << endl;
-	
+		
 
 	for (int elem_idx = 0; elem_idx < rowsize*colsize; elem_idx++) {
 //		cout << "Region: " << regidx+1 << endl;
@@ -196,6 +218,7 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 		bool region_read = false;
 		int number_of_digits = 1;
 		int intcol = 0, introw = 0;
+		has_region = true;
 
 		do {
 			infile.getline(buffer, 512);
@@ -319,12 +342,18 @@ bool regionsudokuboard::read_sudoku(char *filename) {
 								}
 							}
 							break;
+						case 'N':
+							region_read = false;
+							has_region = false;
+							break;
 						default:
 							cerr << "Unknown sudoku region type.\nExpecting T for type selection followed by:\n\
 \tR: for reading from file (default)\n\
 \t8: for standard Pravda 8x8 sudoku\n\
 \t9: for standard Pravda 9x9 sudoku.\n\
-\t9-15 for standard Pravda 9x9 sudoku in year 2015" << endl;
+\t9-15 for standard Pravda 9x9 sudoku in year 2015\n\
+\t9-17 for standard Pravda 9x9 sudoku in year 2017\n\
+\tN: for no regions (just rows, cols and optionally diagonals with D type)" << endl;
 							infile.close();
 							return false;
 						};
