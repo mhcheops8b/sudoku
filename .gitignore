@@ -22,3 +22,5 @@ x64/Debug/*
 #.vs/sudoku_solvers/v16/Browse.VC.db
 x64
 VS/.vs
+.vs/
+out/
