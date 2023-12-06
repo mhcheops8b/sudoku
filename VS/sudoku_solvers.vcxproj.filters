@@ -15,27 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="regsudoku.cpp">
+    <ClCompile Include="..\regsudoku.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="samsudoku.cpp">
+    <ClCompile Include="..\samsudoku.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stdsudoku.cpp">
+    <ClCompile Include="..\stdsudoku.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sudoku.cpp">
+    <ClCompile Include="..\sudoku.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="regsudoku.h">
+    <ClInclude Include="..\regsudoku.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="samsudoku.h">
+    <ClInclude Include="..\samsudoku.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdsudoku.h">
+    <ClInclude Include="..\stdsudoku.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

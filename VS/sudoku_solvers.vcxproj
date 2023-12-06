@@ -99,15 +99,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="regsudoku.cpp" />
-    <ClCompile Include="samsudoku.cpp" />
-    <ClCompile Include="stdsudoku.cpp" />
-    <ClCompile Include="sudoku.cpp" />
+    <ClCompile Include="..\regsudoku.cpp" />
+    <ClCompile Include="..\samsudoku.cpp" />
+    <ClCompile Include="..\stdsudoku.cpp" />
+    <ClCompile Include="..\sudoku.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="regsudoku.h" />
-    <ClInclude Include="samsudoku.h" />
-    <ClInclude Include="stdsudoku.h" />
+    <ClInclude Include="..\regsudoku.h" />
+    <ClInclude Include="..\samsudoku.h" />
+    <ClInclude Include="..\stdsudoku.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
